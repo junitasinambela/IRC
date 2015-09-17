@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package irc;
+package if4031.model;
 
 import java.util.List;
 

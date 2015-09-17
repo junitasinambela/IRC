@@ -4,8 +4,10 @@
  * and open the template in the editor.
  */
 
-package irc;
+package if4031;
 
+import if4031.model.Channel;
+import if4031.model.User;
 import java.util.List;
 
 /**
@@ -16,16 +18,39 @@ public class ChatTool {
     private static List<User> users;
     private static List <Channel> channels;
     public static boolean isNicknameExist(String nickName){
-        return false;
+        boolean exist = false;
+        for(User u : users){
+            if(u.getNickName().equals(nickName)) exist = true;
+        }
+        return exist;
     }
     public static boolean isChannelExist(String channel){
-        return false;
+        boolean exist = false;
+        for(Channel c : channels){
+            if(c.getChannelName().equals(channel)) exist = true;
+        }
+        return exist;
     }
+    
     public static User getUser(String nickName){
-        return null;
+        User user = null;
+        for(User u : users){
+            if(u.getNickName().equals(nickName)){
+                user = u;
+                break;
+            }
+        }
+        return user;
     }
     public static Channel getChannel(String channelName){
-        return null;
+        Channel channel = null;
+        for(Channel c : channels){
+            if(c.getChannelName().equals(channelName)){
+                channel = c;
+                break;
+            }
+        }
+        return channel;
     }
     public static void addUser(User user){
         users.add(user);

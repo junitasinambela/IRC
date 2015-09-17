@@ -3,7 +3,9 @@
  */
 namespace java if4031
 
-typedef string String;
+typedef string String
+
+typedef i32 int
 
 struct M{
 	1: String nickname,
@@ -15,12 +17,12 @@ struct M{
 typedef M Message
 
 service ChatSendService{
-	String setNickname(1: String nickname),
-	String joinChannel(1: String channel),
-	String leaveChannel(1: String channel),
-	String sendMessage(1: String message),
-	String sendMessageTo(1: String channel, 2: String message),
-	String exit(),
+	int setNickname(1: String nickname),
+	int joinChannel(1: String channel),
+	int leaveChannel(1: String channel),
+	int sendMessage(1: String message),
+	int sendMessageTo(1: String channel, 2: String message),
+	int exit(),
 }
 
 service ChatReceiveService{
