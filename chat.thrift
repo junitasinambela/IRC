@@ -7,25 +7,20 @@ typedef string String
 
 typedef i32 int
 
-struct M{
+struct Message{
 	1: String nickname,
 	2: String channel,
 	3: String message,
 	4: String time
 }
 
-typedef M Message
-
-service ChatSendService{
+service ChatService{
 	int setNickname(1: String nickname),
 	int joinChannel(1: String channel),
 	int leaveChannel(1: String channel),
 	int sendMessage(1: String message),
 	int sendMessageTo(1: String channel, 2: String message),
 	int exit(),
-}
-
-service ChatReceiveService{
 	Message receiveMessage(),
 }
 

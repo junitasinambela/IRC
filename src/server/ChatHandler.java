@@ -6,9 +6,10 @@
 
 package server;
 
-import if4031.ChatSendService;
+import if4031.ChatService;
 import if4031.ChatTool;
 import if4031.model.Channel;
+import if4031.model.Message;
 import if4031.model.User;
 import java.util.List;
 import org.apache.thrift.TException;
@@ -17,7 +18,7 @@ import org.apache.thrift.TException;
  *
  * @author user
  */
-public class ChatHandlerSend implements ChatSendService.Iface{
+public class ChatHandler implements ChatService.Iface{
     private User user;
     
     @Override
@@ -70,5 +71,10 @@ public class ChatHandlerSend implements ChatSendService.Iface{
         }
         ChatTool.removeUser(user);
         return 1;
+    }
+
+    @Override
+    public Message receiveMessage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
