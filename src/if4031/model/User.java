@@ -6,6 +6,7 @@
 
 package if4031.model;
 
+import if4031.Message;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ import java.util.List;
 public class User {
     private String nickName;
     private List<String> channels;
+    private List<Message> messages;
     public User(){
         nickName = null;
     }
@@ -38,5 +40,17 @@ public class User {
     }
     public List<String> getChannels(){
         return channels;
+    }
+    public void saveMessage(Message message){
+        messages.add(message);
+    }
+    public Message getFirstMessage(){
+        Message message;
+        if(messages.size() > 0){
+            message = messages.get(0);
+            messages.remove(0);
+        }
+        else message = null;
+        return message;
     }
 }

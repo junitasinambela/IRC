@@ -15,13 +15,13 @@ struct Message{
 }
 
 service ChatService{
-	int setNickname(1: String nickname),
-	int joinChannel(1: String channel),
-	int leaveChannel(1: String channel),
-	int sendMessage(1: String message),
-	int sendMessageTo(1: String channel, 2: String message),
-	int exit(),
-	Message receiveMessage(),
+	String setNickname(1: String nickname),
+	int joinChannel(1: String nickname, 2: String channel),
+	int leaveChannel(1: String nickname, 2: String channel),
+	int sendMessage(1: String nickname, 2: String message),
+	int sendMessageTo(1: String nickname, 2: String channel, 3: String message),
+	int exit(1: String nickname),
+	Message receiveMessage(1: String nickname),
 }
 
 /*
