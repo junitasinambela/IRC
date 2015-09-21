@@ -38,6 +38,9 @@ public class ChatHandler implements ChatService.Iface{
     @Override
     public int joinChannel(String nickname, String channel) throws TException {
         Date date = new Date(System.currentTimeMillis());
+        System.out.println(
+                "[" + date.getYear() + "-" + date.getMonth() + "-" + date.getDate() + "] "
+                        + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + nickname + " JOIN " + channel );
         User user;
         user = ChatTool.getUser(nickname);
         Channel c;
@@ -99,6 +102,7 @@ public class ChatHandler implements ChatService.Iface{
             Channel channelC = ChatTool.getChannel(channel);
             if(channelC.isMember(nickname)){
                 channelC.sendMessagetoMember(nickname, message);
+                System.out.println("Message added");
                 return 1;
             }
             else return -1;
@@ -125,14 +129,18 @@ public class ChatHandler implements ChatService.Iface{
     }
 
     @Override
-    public Message receiveMessage(String nickname) {
+    public Message receiveMessage(String nickname) throws TException {
         Date date = new Date(System.currentTimeMillis());
         System.out.println(
                 "[" + date.getYear() + "-" + date.getMonth() + "-" + date.getDate() + "] "
                         + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + nickname + " RECEIVE MESSAGE");
         User user = ChatTool.getUser(nickname);
         Message message = user.getFirstMessage();
-        return message;
+        if(message == null){
+            System.out.println("No message");
+            throw new TException("No message"); //To change body of generated methods, choose Tools | Templates.
+        }
+        else return message;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

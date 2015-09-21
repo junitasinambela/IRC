@@ -48,10 +48,10 @@ public class User {
     }
     public Message getFirstMessage(){
         Message message;
-        while(messages.isEmpty()){
-            
+        if(messages.isEmpty()){
+            message = null;
         }
-        message = messages.get(0);
+        else message = messages.get(0);
         messages.remove(0);
         return message;
     }

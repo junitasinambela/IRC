@@ -23,8 +23,6 @@ import org.apache.thrift.transport.TTransportException;
  * @author TOLEP
  */
 public class IrcClient {
-    private static TTransport transport;
-    private static ChatService.Client client;
     private static String nickname;
     private static int alive; // 0 for started, 1 for nickname has set, -1 for exit
     public static void main(String [] args) {
@@ -44,16 +42,18 @@ public class IrcClient {
         String command;
         try{
             while(nickname ==  null && alive == 0){
-                 command = in.nextLine();
-                 openSocket();
-                 sendCommand(command);
-                 closeSocket();
+                command = in.nextLine();
+                TTransport transport = openSocket();
+                ChatService.Client client = openStream(transport);
+                sendCommand(command, client);
+                closeSocket(transport);
             }
             while(nickname !=  null && alive == 1){
-                 command = in.nextLine();
-                 openSocket();
-                 sendCommand(command);
-                 closeSocket();
+                command = in.nextLine();
+                TTransport transport = openSocket();
+                ChatService.Client client = openStream(transport);
+                sendCommand(command, client);
+                closeSocket(transport);
             }
         }catch(TException ex){
             ex.printStackTrace();
@@ -66,7 +66,7 @@ public class IrcClient {
      * Call service method based on what user's input
      * @param String
      */
-    private static void sendCommand(String command) throws TException{
+    private static void sendCommand(String command, ChatService.Client client) throws TException{
         String[] parsed = command.split(" ");
         switch(parsed[0]){
             case "/NICK" : {
@@ -74,9 +74,7 @@ public class IrcClient {
                 System.out.println("Your nickname is " + nickname);
                 alive = 1;
                 Runnable clientReceive = () -> {
-                    while(alive == 1){
-                        receive();
-                    }
+                    receive();
                         
                 };
                 new Thread(clientReceive).start();
@@ -135,29 +133,36 @@ public class IrcClient {
             }
         }
     }
-    private static void receive(){
+    private static void receive(){                        
+        TTransport transport = null;
+        ChatService.Client client = null;
         while(alive == 1){
             try {
-                openSocket();
+                transport = openSocket();
+                client = openStream(transport);
                 Message message = client.receiveMessage(nickname);
                 if(message != null)
                     System.out.println("[" + message.channel + "] (" + message.nickname + ") " + message.message);
-                closeSocket();
+                System.out.println("receive");
+                closeSocket(transport);
             } catch (TException ex) {
-                ex.printStackTrace();
+                closeSocket(transport);
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
             }
         }
     }
-    private static void openSocket() throws TTransportException, InterruptedException{
-        transport = new TSocket("localhost", 9090);
+    private static TTransport openSocket() throws TTransportException, InterruptedException{
+        TTransport transport = new TSocket("localhost", 9090);
         transport.open();
         //transport.wait(5000);
-        TProtocol protocol = new TBinaryProtocol(transport);
-        client = new ChatService.Client(protocol);
+        return transport;
     }
-    private static void closeSocket(){
+    private static ChatService.Client openStream(TTransport transport){
+        TProtocol protocol = new TBinaryProtocol(transport);
+        ChatService.Client client = new ChatService.Client(protocol);
+        return client;
+    }
+    private static void closeSocket(TTransport transport){
         if(transport.isOpen())
             transport.close();
     }
