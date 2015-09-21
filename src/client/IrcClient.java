@@ -123,7 +123,7 @@ public class IrcClient {
                     else{
                         message = parsed[0];
                         if(parsed.length >= 2){
-                            for(int i = 2; i < parsed.length; i++){
+                            for(int i = 1; i < parsed.length; i++){
                                 message = " " + parsed[i];
                             }
                         }
@@ -141,13 +141,16 @@ public class IrcClient {
                 transport = openSocket();
                 client = openStream(transport);
                 Message message = client.receiveMessage(nickname);
-                if(message != null)
+                if(message.getChannel() != null && message.getMessage() != null && message.getNickname() != null){
                     System.out.println("[" + message.channel + "] (" + message.nickname + ") " + message.message);
-                System.out.println("receive");
-                closeSocket(transport);
-            } catch (TException ex) {
+                    System.out.println("receive");
+                }
                 closeSocket(transport);
             } catch (InterruptedException ex) {
+            } catch (TTransportException ex) {
+                
+            } catch (TException ex) {
+                
             }
         }
     }

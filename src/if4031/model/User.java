@@ -47,12 +47,15 @@ public class User {
         System.out.println("Message added");
     }
     public Message getFirstMessage(){
-        Message message;
+        Message message = new Message();
+        System.out.println("Size : NIIIHHHH " + messages.size());
         if(messages.isEmpty()){
             message = null;
         }
-        else message = messages.get(0);
-        messages.remove(0);
+        else {
+            message = messages.get(0);
+            messages.remove(0);
+        }
         return message;
     }
 }

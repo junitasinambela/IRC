@@ -129,7 +129,7 @@ public class ChatHandler implements ChatService.Iface{
     }
 
     @Override
-    public Message receiveMessage(String nickname) throws TException {
+    public Message receiveMessage(String nickname){
         Date date = new Date(System.currentTimeMillis());
         System.out.println(
                 "[" + date.getYear() + "-" + date.getMonth() + "-" + date.getDate() + "] "
@@ -137,10 +137,9 @@ public class ChatHandler implements ChatService.Iface{
         User user = ChatTool.getUser(nickname);
         Message message = user.getFirstMessage();
         if(message == null){
-            System.out.println("No message");
-            throw new TException("No message"); //To change body of generated methods, choose Tools | Templates.
+            message = new Message();
         }
-        else return message;
+        return message;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
