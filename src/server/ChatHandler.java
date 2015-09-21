@@ -129,17 +129,14 @@ public class ChatHandler implements ChatService.Iface{
     }
 
     @Override
-    public Message receiveMessage(String nickname){
+    public List<Message> receiveMessage(String nickname){
         Date date = new Date(System.currentTimeMillis());
         System.out.println(
                 "[" + date.getYear() + "-" + date.getMonth() + "-" + date.getDate() + "] "
                         + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + nickname + " RECEIVE MESSAGE");
         User user = ChatTool.getUser(nickname);
-        Message message = user.getFirstMessage();
-        if(message == null){
-            message = new Message();
-        }
-        return message;
+        List<Message> messages = user.getMessage();
+        return messages;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -8,6 +8,7 @@ package client;
 
 import if4031.ChatService;
 import if4031.model.Message;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,9 +26,19 @@ import org.apache.thrift.transport.TTransportException;
 public class IrcClient {
     private static String nickname;
     private static int alive; // 0 for started, 1 for nickname has set, -1 for exit
+    private static TTransport transport;
+    private static ChatService.Client client;
     public static void main(String [] args) {
         nickname = null;
         alive = 0;
+        try {
+            transport = openSocket();
+            client = openStream(transport);
+        } catch (TTransportException ex) {
+            Logger.getLogger(IrcClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(IrcClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
         Runnable clientSend = () -> {
             perform();
         };
@@ -43,17 +54,13 @@ public class IrcClient {
         try{
             while(nickname ==  null && alive == 0){
                 command = in.nextLine();
-                TTransport transport = openSocket();
-                ChatService.Client client = openStream(transport);
                 sendCommand(command, client);
-                closeSocket(transport);
             }
             while(nickname !=  null && alive == 1){
                 command = in.nextLine();
                 TTransport transport = openSocket();
                 ChatService.Client client = openStream(transport);
                 sendCommand(command, client);
-                closeSocket(transport);
             }
         }catch(TException ex){
             ex.printStackTrace();
@@ -73,17 +80,13 @@ public class IrcClient {
                 nickname = client.setNickname(parsed[1]);
                 System.out.println("Your nickname is " + nickname);
                 alive = 1;
-                Runnable clientReceive = () -> {
-                    receive();
-                        
-                };
-                new Thread(clientReceive).start();
                 break;
             }
             case "/JOIN" : {
                 if(nickname != null){
                     if(client.joinChannel(nickname, parsed[1]) == 1){
                         System.out.println("You joined " + parsed[1]);
+                        receive();
                     }
                 }
                 break;
@@ -92,6 +95,7 @@ public class IrcClient {
                 if(nickname != null){
                     if(client.leaveChannel(nickname, parsed[1]) == 1){
                         System.out.println("You left " + parsed[1]);
+                        receive();
                     }
                 }
                 break;
@@ -114,7 +118,7 @@ public class IrcClient {
                             message = parsed[1];
                             if(parsed.length > 2){
                                 for(int i = 2; i < parsed.length; i++){
-                                    message = " " + parsed[i];
+                                    message = message + " " + parsed[i];
                                 }
                             }
                             if(client.sendMessageTo(nickname, channel, message) == 1){}
@@ -124,34 +128,30 @@ public class IrcClient {
                         message = parsed[0];
                         if(parsed.length >= 2){
                             for(int i = 1; i < parsed.length; i++){
-                                message = " " + parsed[i];
+                                message = message + " " + parsed[i];
                             }
                         }
                         if(client.sendMessage(nickname, message) == 1){}
                     }
+                    receive();
                 }
             }
         }
     }
-    private static void receive(){                        
-        TTransport transport = null;
-        ChatService.Client client = null;
-        while(alive == 1){
-            try {
-                transport = openSocket();
-                client = openStream(transport);
-                Message message = client.receiveMessage(nickname);
-                if(message.getChannel() != null && message.getMessage() != null && message.getNickname() != null){
-                    System.out.println("[" + message.channel + "] (" + message.nickname + ") " + message.message);
-                    System.out.println("receive");
+    private static void receive(){
+        try {
+            List<Message> messages = client.receiveMessage(nickname);
+            if(!messages.isEmpty()){
+                for(Message message : messages){
+                    if(message.getChannel() != null && message.getMessage() != null && message.getNickname() != null){
+                        System.out.println("[" + message.channel + "] (" + message.nickname + ") " + message.message);
+                    }
                 }
-                closeSocket(transport);
-            } catch (InterruptedException ex) {
-            } catch (TTransportException ex) {
-                
-            } catch (TException ex) {
-                
             }
+        } catch (TTransportException ex) {
+
+        } catch (TException ex) {
+
         }
     }
     private static TTransport openSocket() throws TTransportException, InterruptedException{

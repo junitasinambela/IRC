@@ -46,16 +46,16 @@ public class User {
         messages.add(m);
         System.out.println("Message added");
     }
-    public Message getFirstMessage(){
-        Message message = new Message();
-        System.out.println("Size : NIIIHHHH " + messages.size());
-        if(messages.isEmpty()){
-            message = null;
+    public List<Message> getMessage(){
+        List<Message> messagesTemp = new ArrayList<>();
+        Message m;
+        System.out.println("Message size : " + messages.size());
+        for(Message message : messages){
+            m = new Message(message);
+            System.out.println("Messages : " + m.getMessage());
+            messagesTemp.add(m);
         }
-        else {
-            message = messages.get(0);
-            messages.remove(0);
-        }
-        return message;
+        messages.clear();
+        return messagesTemp;
     }
 }
