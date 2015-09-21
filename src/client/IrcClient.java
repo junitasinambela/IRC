@@ -77,9 +77,12 @@ public class IrcClient {
         String[] parsed = command.split(" ");
         switch(parsed[0]){
             case "/NICK" : {
+                if (nickname != null) {
+                    client.exit(nickname);
+                }
                 nickname = client.setNickname(parsed[1]);
                 System.out.println("Your nickname is " + nickname);
-                alive = 1;
+                alive = 1;                    
                 break;
             }
             case "/JOIN" : {

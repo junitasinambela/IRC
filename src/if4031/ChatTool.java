@@ -9,6 +9,7 @@ package if4031;
 import if4031.model.Channel;
 import if4031.model.User;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -17,10 +18,19 @@ import java.util.ArrayList;
 public class ChatTool {
     private static ArrayList<User> users;
     private static ArrayList <Channel> channels;
+    private static ArrayList<String> listRandom;
+
     public ChatTool(){
         users = new ArrayList<>();
         channels = new ArrayList<>();
+        listRandom = new ArrayList<>();
+        listRandom.add("jun");
+        listRandom.add("ita");
+        listRandom.add("afik");
+        listRandom.add("sin");
+        listRandom.add("bela");
     }
+    
     public static boolean isNicknameExist(String nickName){
         boolean exist = false;
         if(!users.isEmpty())
@@ -71,7 +81,9 @@ public class ChatTool {
         channels.add(channel);
     }
     public static String generateRandomNickName(){
-        return null;
+        Random rn = new Random();
+        int idx = rn.nextInt(4);
+        return listRandom.get(idx);
     }
     public static void removeUser(User user){
         users.remove(user);
