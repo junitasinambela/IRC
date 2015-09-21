@@ -6,7 +6,7 @@
 
 package if4031.model;
 
-import if4031.Message;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,14 +14,13 @@ import java.util.List;
  * @author user
  */
 public class User {
-    private String nickName;
-    private List<String> channels;
-    private List<Message> messages;
-    public User(){
-        nickName = null;
-    }
-    public void setNickName(String nickname){
-        nickName = nickname;
+    private final String nickName;
+    private ArrayList<String> channels;
+    private ArrayList<Message> messages;
+    public User(String nickname){
+        this.nickName = nickname;
+        channels = new ArrayList<>();
+        messages = new ArrayList<>();
     }
     public String getNickName(){
         return nickName;
@@ -30,27 +29,30 @@ public class User {
         if(isJoinChannel(channel)){
             
         }
-        channels.add(channel);
+        else channels.add(channel);
     }
     public void leaveChannel(String channel){
         channels.remove(channel);
     }
     public boolean isJoinChannel(String channel){
-        return channels.contains(channel);
+        if(channels.isEmpty()) return false;
+        else return channels.contains(channel);
     }
     public List<String> getChannels(){
         return channels;
     }
     public void saveMessage(Message message){
-        messages.add(message);
+        Message m = new Message(message);
+        messages.add(m);
+        System.out.println("Message added");
     }
     public Message getFirstMessage(){
         Message message;
-        if(messages.size() > 0){
-            message = messages.get(0);
-            messages.remove(0);
+        while(messages.isEmpty()){
+            
         }
-        else message = null;
+        message = messages.get(0);
+        messages.remove(0);
         return message;
     }
 }

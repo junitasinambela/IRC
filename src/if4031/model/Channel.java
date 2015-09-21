@@ -7,8 +7,7 @@
 package if4031.model;
 
 import if4031.ChatTool;
-import if4031.Message;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,9 +15,10 @@ import java.util.List;
  */
 public class Channel {
     private final String channelName;
-    private List<String> users;
+    private ArrayList<String> users;
     public Channel(String channelName){
         this.channelName = channelName;
+        users = new ArrayList<>();
     }
     public String getChannelName(){
         return channelName;
@@ -32,10 +32,10 @@ public class Channel {
     public void sendMessagetoMember(String nickSource, String message){
         User user;
         Message messageM = new Message();
-        messageM.channel = channelName;
-        messageM.message = message;
-        messageM.nickname = nickSource;
-        messageM.time = null;
+        messageM.setNickname(nickSource);
+        messageM.setChannel(channelName);
+        messageM.setMessage(message);
+        messageM.setTime(null);
         for(String nick : users){
             user = ChatTool.getUser(nick);
             user.saveMessage(messageM);

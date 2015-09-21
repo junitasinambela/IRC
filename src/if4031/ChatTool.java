@@ -8,27 +8,39 @@ package if4031;
 
 import if4031.model.Channel;
 import if4031.model.User;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
  * @author user
  */
 public class ChatTool {
-    private static List<User> users;
-    private static List <Channel> channels;
+    private static ArrayList<User> users;
+    private static ArrayList <Channel> channels;
+    public ChatTool(){
+        users = new ArrayList<>();
+        channels = new ArrayList<>();
+    }
     public static boolean isNicknameExist(String nickName){
         boolean exist = false;
-        for(User u : users){
-            if(u.getNickName().equals(nickName)) exist = true;
-        }
+        if(!users.isEmpty())
+            for(User u : users){
+                if(u.getNickName().equals(nickName)){
+                    exist = true;
+                    break;
+                }
+            }
         return exist;
     }
     public static boolean isChannelExist(String channel){
         boolean exist = false;
-        for(Channel c : channels){
-            if(c.getChannelName().equals(channel)) exist = true;
-        }
+        if(!channels.isEmpty())
+            for(Channel c : channels){
+                if(c.getChannelName().equals(channel)){
+                    exist = true;
+                    break;
+                }
+            }
         return exist;
     }
     

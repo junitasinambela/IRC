@@ -6,6 +6,9 @@
 package server;
 
 import if4031.ChatService;
+import if4031.ChatTool;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
@@ -18,7 +21,10 @@ import org.apache.thrift.transport.TServerTransport;
 public class IrcServer {
     public static ChatHandler handler;
     public static ChatService.Processor processor;
+    static Logger logger = Logger.getLogger(IrcServer.class);
     public static void main(String args[]){
+        BasicConfigurator.configure();
+        ChatTool chatTool = new ChatTool();
         try {
             handler = new ChatHandler();
             processor = new ChatService.Processor(handler);
@@ -36,8 +42,8 @@ public class IrcServer {
     public static void handle(ChatService.Processor processor){
         try {
             TServerTransport serverTransport = new TServerSocket(9090);
-            TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
-            System.out.println("Starting the server...");
+            TServer server = new TThreadPoolServer(new
+                    TThreadPoolServer.Args(serverTransport).processor(processor));
             server.serve();
         } catch (Exception e) {
             e.printStackTrace();
